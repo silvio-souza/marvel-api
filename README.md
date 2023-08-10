@@ -35,3 +35,10 @@ Now you can execute the main index.js file and generate the CSV:
 node index.js
 ```
 The CSV file will be generated and saved on the project folder as "*{characterName}-comics.CSV*"
+
+## Observations
+
+- Since the API only accept a maximum of 100 items requested per request, it could take a while to generate the file for older characters that has a lot of comics published over the years (Thor, for example, has over 1800 listed on the API).
+A simple loading percentage was added to give some feedback regarding the request and CSV build process.
+
+- The program will only retrieve comics listed as "*Format: Comic*". Other types like "*Trade Paperback*" won't be added to the CSV file.
