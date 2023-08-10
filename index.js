@@ -1,4 +1,5 @@
 const axios = require("axios"); //requests axios package
+const fs = require("fs"); //request fs (FileSystem) package to manage the CSV file
 
 // API request auth tokens
 const apikey = "5de721d6ac2c691af3f0c8e6f9b6763e";
@@ -35,7 +36,8 @@ axios
 original API request:
 https://gateway.marvel.com/v1/public/characters/1009664/comics?apikey=5de721d6ac2c691af3f0c8e6f9b6763e&hash=f5f469e0e1ff84815e2566764ece572f&ts=1691603446462
 */
-//  method to request the comics information for the character
+// method to request the comics information for the character
+// due to the API restriction for 100 items per request, this iterates until the amount of all comics are retrieved
 axios
   .get(
     `http://gateway.marvel.com/v1/public/characters/${characterId}/comics?apikey=${apikey}&hash=${hash}&ts=${ts}&offset=0&limit=100`
@@ -52,7 +54,11 @@ axios
       }
     });
 
-    console.log(csv);
+    // console.log(csv);
+    fs.appendFile(`${character}-comics.csv`, csv, (err) => {
+      if (err) throw err;
+      console.log("File created successfully.");
+    });
   });
 
 // function to separate the title text and year of the comic
@@ -60,7 +66,7 @@ getTitleAndYear = (rawTitle) => {
   let title = rawTitle.split("(");
   let year = title[1].split(")");
 
-  title = (title[0] + year[1].trim()).toString();
+  title = (title[0].replace(/,/g, ".") + year[1].trim()).toString();
   year = year[0].toString();
 
   return [title, year];
